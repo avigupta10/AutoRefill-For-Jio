@@ -14,10 +14,10 @@ from utils import add_sum_index, add_sum, total_sum, extract_time, size_and_add_
 username = ""
 password = ""
 
-# login_link = "https://partnercentral.jioconnect.com/c/portal/login?p_l_id=20187&redirect=/group/guest/home"
-login_url = "https://fiori.jioconnect.com/zhttp_request"
-dsm_orders_url = "https://onejio.jioconnect.com/dsm-orders/"
-etopup_order_url = "https://onejio.jioconnect.com/dsm-orders/#/etopuporders"
+# login_link = "LOGIN LINK"
+login_url = "LOGIN URL"
+dsm_orders_url = "URL"
+etopup_order_url = "URL"
 
 push_button = "input[value='Push']"
 filter_button = '//*[@id="root"]/div/div/div/main/div/main/div/div[1]/div[2]/div[2]/button/span[1]'
