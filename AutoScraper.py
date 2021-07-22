@@ -11,8 +11,8 @@ from selenium.common.exceptions import NoSuchElementException
 import datetime
 from utils import add_sum_index, add_sum, total_sum, extract_time, size_and_add_cols, fos_format
 
-username = "0681000816"
-password = "July@2021"
+username = ""
+password = ""
 
 # login_link = "https://partnercentral.jioconnect.com/c/portal/login?p_l_id=20187&redirect=/group/guest/home"
 login_url = "https://fiori.jioconnect.com/zhttp_request"
