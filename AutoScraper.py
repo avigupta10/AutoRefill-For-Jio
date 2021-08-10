@@ -1,18 +1,16 @@
+import datetime
 import os
+
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
-
-from automate import *
-from styleframe import StyleFrame, Styler, utils
-
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
-import datetime
-from utils import add_sum_index, add_sum, total_sum, extract_time, size_and_add_cols, fos_format
+from styleframe import StyleFrame, Styler
 
-username = "0681000816"
-password = "July@2021"
+from automate import *
+from SECRETS import USERNAME, PASSWORD
+from utils import add_sum_index, add_sum, total_sum, extract_time, size_and_add_cols, fos_format
 
 # login_link = "https://partnercentral.jioconnect.com/c/portal/login?p_l_id=20187&redirect=/group/guest/home"
 login_url = "https://fiori.jioconnect.com/zhttp_request"
@@ -43,7 +41,7 @@ def main():
     ws.title = datetime.date.today().strftime("%d %b %Y")
     file_path = f"\\{datetime.date.today().strftime('%d-%b-%Y')}.xlsx"
     file_name = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + file_path
-    login(browser=browser, login_link=login_url, password=password, user_name=username)
+    login(browser=browser, login_link=login_url, password=PASSWORD, user_name=USERNAME)
     automate(
         browser, login_url, dsm_orders_url,
         etopup_order_url,
@@ -61,8 +59,8 @@ def main():
     r = len(browser.find_elements_by_xpath("//*[@class='MuiTable-root']/tbody/tr"))
     c = len(browser.find_elements_by_xpath("//*[@class='MuiTable-root']/tbody/tr[3]/td"))
     try:
-        for row in range(2, r):
-            for col in range(1, c):
+        for row in range(2, r + 1):
+            for col in range(1, c + 1):
                 if browser.find_element_by_xpath(f"//*[@class='MuiTable-root']/tbody/tr[{row}]/td[{col}]").text:
                     data = browser.find_element_by_xpath(f"//*[@class='MuiTable-root']/tbody/tr[{row}]/td[{col}]").text
                     char = get_column_letter(col)
@@ -70,6 +68,27 @@ def main():
                     ws[char + str(row)] = data
     except NoSuchElementException:
         print("End")
+    try:
+        browser.find_element_by_xpath(
+            '//*[@id="root"]/div/div/div/main/div/main/div/div[2]/div/div/table/tfoot/tr/td/div/div[3]/span['
+            '4]/button/span[1]/span').click()
+        r = len(browser.find_elements_by_xpath("//*[@class='MuiTable-root']/tbody/tr"))
+        c = len(browser.find_elements_by_xpath("//*[@class='MuiTable-root']/tbody/tr[3]/td"))
+        try:
+            for row in range(2, r + 1):
+                for col in range(1, c + 1):
+                    if browser.find_element_by_xpath(f"//*[@class='MuiTable-root']/tbody/tr[{row}]/td[{col}]").text:
+                        sys = browser.find_element_by_xpath(
+                            f"//*[@id='root']/div/div/div/main/div/main/div/div[2]/div/div/div["
+                            f"2]/div/div/div/table/tbody/tr[{row}]/td[{col}]").text
+                        char = get_column_letter(col)
+                        print(ws[char + str(row)])
+                        ws[char + str(row)] = sys
+        except NoSuchElementException as e:
+            print("End 2")
+    except Exception:
+        print('No Second Page')
+
     wb.save(file_name)
 
     # Getting the exact column length for the final SUM

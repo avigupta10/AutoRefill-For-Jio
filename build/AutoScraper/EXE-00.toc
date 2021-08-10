@@ -43,7 +43,7 @@
  [],
  False,
  False,
- 1624716346,
+ 1628534335,
  [('run.exe',
    'd:\\pythonprojects\\jioscraper\\venv\\lib\\site-packages\\PyInstaller\\bootloader\\Windows-32bit\\run.exe',
    'EXECUTABLE')])
