@@ -8,8 +8,9 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from styleframe import StyleFrame, Styler
 
+from SECRETS import *
 from automate import *
-from SECRETS import USERNAME, PASSWORD
+from send_mail import send_mail
 from utils import add_sum_index, add_sum, total_sum, extract_time, size_and_add_cols, fos_format
 
 # login_link = "https://partnercentral.jioconnect.com/c/portal/login?p_l_id=20187&redirect=/group/guest/home"
@@ -27,6 +28,7 @@ auto_refill_button_1 = '//*[@id="root"]/div/div/div/main/div/main/div/div[2]/div
 auto_refill_button_2 = '//*[@id="menu-"]/div[3]/ul/li[3]/div/span'
 rows_button_1 = '//*[@id="root"]/div/div/div/main/div/main/div/div[2]/div/div/table/tfoot/tr/td/div/div[2]/div/div'
 rows_button_2 = '//*[@id="menu-"]/div[3]/ul/li[4]'
+final_balance = '/html/body/div[1]/div/div/div/main/div/main/div/div[1]/div[3]/div/div/p[2]'
 
 options = webdriver.ChromeOptions()
 options.add_argument("--headless")
@@ -56,11 +58,13 @@ def main():
         rows_button_2,
         driver=browser,
     )
+    balance = browser.find_element_by_xpath(final_balance).text
+    print('balance: ', balance)
     r = len(browser.find_elements_by_xpath("//*[@class='MuiTable-root']/tbody/tr"))
     c = len(browser.find_elements_by_xpath("//*[@class='MuiTable-root']/tbody/tr[3]/td"))
     try:
-        for row in range(2, r + 1):
-            for col in range(1, c + 1):
+        for row in range(2, r+1):
+            for col in range(1, c+1):
                 if browser.find_element_by_xpath(f"//*[@class='MuiTable-root']/tbody/tr[{row}]/td[{col}]").text:
                     data = browser.find_element_by_xpath(f"//*[@class='MuiTable-root']/tbody/tr[{row}]/td[{col}]").text
                     char = get_column_letter(col)
@@ -124,11 +128,18 @@ def main():
 
     sum_index, c = add_sum_index(file_name, column_name='Unnamed: 7', exact_column_length=exact_column_length)
 
-    add_sum(file_name, sum_index, exact_column_length, total, c)
+    add_sum(file_name, sum_index, exact_column_length, total, balance, c)
 
     size_and_add_cols(file_name, 3)
 
-    print('Final sheet saved to', file_name)
+    send_mail(SEND_FROM, PASS, SEND_FROM, subject="Today's AutoRefill",
+              text="AutoRefilloRefill", send_to=RECEIVER,
+              files=[file_name])
+
+    print('Mail Sent and Final sheet saved to', file_name)
+
+    time.sleep(3)
+    browser.close()
     return True
 
 

@@ -22,7 +22,7 @@ def add_sum_index(excel_name, column_name, exact_column_length, sheet_name=0):
     return sum_index, c
 
 
-def add_sum(excel_name, sum_index, exact_column_length, total, count):
+def add_sum(excel_name, sum_index, exact_column_length, total,final_balance, count):
     initial_index = 2
     wb = openpyxl.load_workbook(excel_name)
     ws = wb.active
@@ -33,6 +33,8 @@ def add_sum(excel_name, sum_index, exact_column_length, total, count):
         initial_index = i + 1
     ws[f'B{exact_column_length + count + 2}'] = total
     ws[f'B{exact_column_length + count + 2}'].font = Font(bold=True)
+    ws[f'A{exact_column_length + count + 2}'] = ''.join(final_balance.split(' ')[2:])
+    ws[f'A{exact_column_length + count + 2}'].font = Font(bold=True)
     wb.save(excel_name)
     return True
 
@@ -117,3 +119,4 @@ def size_and_add_cols(file_name, colm):
 def fos_format(col_name):
     m = list(map(str,[" ".join(str(n).split()[1:]) for n in col_name]))
     return m
+
