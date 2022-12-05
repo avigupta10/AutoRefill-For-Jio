@@ -22,7 +22,7 @@ def add_sum_index(excel_name, column_name, exact_column_length, sheet_name=0):
     return sum_index, c
 
 
-def add_sum(excel_name, sum_index, exact_column_length, total,final_balance, count):
+def add_sum(excel_name, sum_index, exact_column_length, total, final_balance, count):
     initial_index = 2
     wb = openpyxl.load_workbook(excel_name)
     ws = wb.active
@@ -74,10 +74,11 @@ def extract_time(excel_name, column_name, start_from=get_yesterday_date_time(), 
             pass
         else:
             t = "".join(str(i).split('/'))
+            t = t.replace("Sept", "Sep")
             time.append(datetime.datetime.strptime(t, '%d %b %Y %H:%M'))
     for j in time:
         if time_in_range(start_from, to, j):
-            time_range.append(str(j.strftime('%#d %b %Y /%H:%M')))
+            time_range.append(str(j.strftime('%#d %b %Y /%H:%M')).replace("Sep", "Sept"))
     return time_range
 
 
@@ -117,6 +118,5 @@ def size_and_add_cols(file_name, colm):
 
 
 def fos_format(col_name):
-    m = list(map(str,[" ".join(str(n).split()[1:]) for n in col_name]))
+    m = list(map(str, [" ".join(str(n).split()[1:]) for n in col_name]))
     return m
-

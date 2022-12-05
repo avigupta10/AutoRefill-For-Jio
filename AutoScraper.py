@@ -15,8 +15,9 @@ from utils import add_sum_index, add_sum, total_sum, extract_time, size_and_add_
 
 # login_link = "https://partnercentral.jioconnect.com/c/portal/login?p_l_id=20187&redirect=/group/guest/home"
 login_url = "https://fiori.jioconnect.com/zhttp_request"
-dsm_orders_url = "https://onejio.jioconnect.com/dsm-orders/"
-etopup_order_url = "https://onejio.jioconnect.com/dsm-orders/#/etopuporders"
+intermidiate_req = "https://onejio-all.jioconnect.com/dsm-dashboard/#/"
+dsm_orders_url = "https://onejio-all.jioconnect.com/dsm-orders/#/"
+etopup_order_url = "https://onejio-all.jioconnect.com/dsm-orders/#/etopuporders"
 
 push_button = "input[value='Push']"
 filter_button = '//*[@id="root"]/div/div/div/main/div/main/div/div[1]/div[2]/div[2]/button/span[1]'
@@ -31,13 +32,20 @@ rows_button_2 = '//*[@id="menu-"]/div[3]/ul/li[4]'
 final_balance = '/html/body/div[1]/div/div/div/main/div/main/div/div[1]/div[3]/div/div/p[2]'
 
 options = webdriver.ChromeOptions()
-options.add_argument("--headless")
+# options.add_argument("--headless")
 options.add_experimental_option("excludeSwitches", ["enable-automation"])
 options.add_argument('window-size=1920x1080')
 browser = webdriver.Chrome(options=options)
 
 
 def main():
+    today_date_time = datetime.date.today()
+    to_ = datetime.datetime(today_date_time.year, today_date_time.month, today_date_time.day, 7, 0)
+    print(to_)
+    yesterday_date_time = datetime.date.today() - datetime.timedelta(days=1)
+    from_ = datetime.datetime(yesterday_date_time.year, yesterday_date_time.month, yesterday_date_time.day, 12, 0)
+    print(from_)
+
     wb = Workbook()
     ws = wb.active
     ws.title = datetime.date.today().strftime("%d %b %Y")
@@ -45,7 +53,7 @@ def main():
     file_name = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + file_path
     login(browser=browser, login_link=login_url, password=PASSWORD, user_name=USERNAME)
     automate(
-        browser, login_url, dsm_orders_url,
+        browser, login_url, dsm_orders_url,intermidiate_req,
         etopup_order_url,
         push_button,
         filter_button,
@@ -113,7 +121,7 @@ def main():
 
     # Filtering the worksheet within the given time
     datetime_filter = df['Unnamed: 4'].isin(extract_time(file_name, column_name='Unnamed: 4'))
-    df = df.loc[datetime_filter, ['Unnamed: 1', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 7', ]]
+    df = df.loc[datetime_filter, ['Unnamed: 1', 'Unnamed: 6', 'Unnamed: 4', 'Unnamed: 7', ]]
 
     # Sorting the values
     df.sort_values(by='Unnamed: 7', ascending=True, inplace=True)
@@ -124,7 +132,7 @@ def main():
     sf.to_excel(writer)
     writer.save()
 
-    total = total_sum(file_name, column_name="Unnamed: 3")
+    total = total_sum(file_name, column_name="Unnamed: 6")
 
     sum_index, c = add_sum_index(file_name, column_name='Unnamed: 7', exact_column_length=exact_column_length)
 

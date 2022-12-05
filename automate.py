@@ -17,7 +17,7 @@ def login(browser, login_link, user_name, password):
 
 
 def automate(
-        browser, request_url, dsm_orders_url,
+        browser, request_url, dsm_orders_url,intermidiate_req,
         etopup_order_url,
         push_button,
         filter_button,
@@ -30,7 +30,7 @@ def automate(
         rows_button_2,
         driver
 ):
-    # browser.get(request_url)
+    browser.get(intermidiate_req)
     time.sleep(1)
     browser.get(dsm_orders_url)
     time.sleep(1)
